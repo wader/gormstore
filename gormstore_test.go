@@ -274,7 +274,7 @@ func TestPeriodicCleanup(t *testing.T) {
 	countFn := makeCountHandler("session", store)
 
 	quit := make(chan struct{})
-	go store.PeriodicCleanup(500*time.Millisecond, quit)
+	go store.PeriodicCleanup(200*time.Millisecond, quit)
 
 	// test that cleanup i done at least twice
 
@@ -285,7 +285,7 @@ func TestPeriodicCleanup(t *testing.T) {
 		t.Error("Expected r1 session to exist")
 	}
 
-	time.Sleep(1500 * time.Millisecond)
+	time.Sleep(2 * time.Second)
 
 	if findSession(db, store, id1) != nil {
 		t.Error("Expected r1 session to be deleted")
@@ -298,7 +298,7 @@ func TestPeriodicCleanup(t *testing.T) {
 		t.Error("Expected r2 session to exist")
 	}
 
-	time.Sleep(1500 * time.Millisecond)
+	time.Sleep(2 * time.Second)
 
 	if findSession(db, store, id2) != nil {
 		t.Error("Expected r2 session to be deleted")
@@ -315,7 +315,7 @@ func TestPeriodicCleanup(t *testing.T) {
 		t.Error("Expected r3 session to exist")
 	}
 
-	time.Sleep(1500 * time.Millisecond)
+	time.Sleep(2 * time.Second)
 
 	if findSession(db, store, id3) == nil {
 		t.Error("Expected r3 session to exist")
