@@ -1,0 +1,9 @@
+services:
+  - docker
+
+language: go
+go:
+  - tip
+  - 1.5
+
+script: ./test
