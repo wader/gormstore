@@ -22,9 +22,10 @@ sqlite3() {
 }
 
 postgres() {
-  ID=$(docker run -p 5432:5432 -d postgres:9.4)
-  waitport ${DOCKER_IP} 5432 50 || return 1
-  DATABASE_URI="postgres://user=postgres password=postgres dbname=postgres host=${DOCKER_IP} sslmode=disable" go test -v
+  ID=$(docker run -p 5432 -d postgres:9.4)
+  PORT=$(docker port "$ID" 5432 | cut -d : -f 2)
+  waitport "$DOCKER_IP" "$PORT" 50 || return 1
+  DATABASE_URI="postgres://user=postgres password=postgres dbname=postgres host=$DOCKER_IP port=$PORT sslmode=disable" go test -v
   S=$?
   docker rm -f $ID
   return $S
@@ -36,9 +37,10 @@ mysql() {
     -e MYSQL_USER=mysql \
     -e MYSQL_PASSWORD=mysql \
     -e MYSQL_DATABASE=mysql \
-    -p 3306:3306 -d mysql:5.7)
-  waitport ${DOCKER_IP} 3306 50 || return 1
-  DATABASE_URI="mysql://mysql:mysql@tcp(${DOCKER_IP}:3306)/mysql?charset=utf8&parseTime=True" go test -v
+    -p 3306 -d mysql:5.7)
+  PORT=$(docker port "$ID" 3306 | cut -d : -f 2)
+  waitport $DOCKER_IP "$PORT" 50 || return 1
+  DATABASE_URI="mysql://mysql:mysql@tcp($DOCKER_IP:$PORT)/mysql?charset=utf8&parseTime=True" go test -v
   S=$?
   docker rm -f $ID
   return $S
