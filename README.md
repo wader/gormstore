@@ -42,3 +42,7 @@ All databases using docker:
 If docker is not local (docker-machine etc):
 
     DOCKER_IP=$(docker-machine ip dev) ./test
+
+#### License
+
+gormstore is licensed under the MIT license. See [LICENSE](LICENSE) for the full license text.
