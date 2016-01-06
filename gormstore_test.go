@@ -42,12 +42,16 @@ func connectDbURI(uri string) (*gorm.DB, error) {
 		return nil, err
 	}
 
-	g, err := gorm.Open(u.Scheme, c)
-	if err != nil {
-		return nil, err
+	// retry to give some time for db to be ready
+	for i := 0; i < 50; i++ {
+		g, err := gorm.Open(parts[0], c)
+		if err == nil {
+			return &g, nil
+		}
+		time.Sleep(500 * time.Millisecond)
 	}
 
-	return &g, nil
+	return nil, err
 }
 
 // create new shared in memory db
