@@ -8,7 +8,6 @@ import (
 	"fmt"
 	"net/http"
 	"net/http/httptest"
-	"net/url"
 	"os"
 	"strings"
 	"testing"
@@ -33,12 +32,12 @@ func parseCookies(value string) map[string]*http.Cookie {
 }
 
 func connectDbURI(uri string) (*gorm.DB, error) {
-	u, err := url.Parse(uri)
-	if err != nil {
-		return nil, err
-	}
+	parts := strings.SplitN(uri, "://", 2)
+	driver := parts[0]
+	dsn := parts[1]
 
-	c, err := sql.Open(u.Scheme, strings.TrimPrefix(uri, u.Scheme+"://"))
+	var err error
+	c, err := sql.Open(driver, dsn)
 	if err != nil {
 		return nil, err
 	}
