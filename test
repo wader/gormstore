@@ -12,7 +12,7 @@ postgres() {
   PORT=$(docker port "$ID" 5432 | cut -d : -f 2)
   DATABASE_URI="postgres://user=postgres password=postgres dbname=postgres host=$DOCKER_IP port=$PORT sslmode=disable" go test -v
   S=$?
-  docker rm -f $ID
+  docker rm -vf "$ID" > /dev/null
   return $S
 }
 
@@ -26,7 +26,7 @@ mysql() {
   PORT=$(docker port "$ID" 3306 | cut -d : -f 2)
   DATABASE_URI="mysql://mysql:mysql@tcp($DOCKER_IP:$PORT)/mysql?charset=utf8&parseTime=True" go test -v
   S=$?
-  docker rm -f $ID
+  docker rm -vf "$ID" > /dev/null
   return $S
 }
 
