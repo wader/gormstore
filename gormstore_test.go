@@ -3,7 +3,6 @@
 package gormstore
 
 import (
-	"database/sql"
 	"flag"
 	"fmt"
 	"net/http"
@@ -37,14 +36,9 @@ func connectDbURI(uri string) (*gorm.DB, error) {
 	dsn := parts[1]
 
 	var err error
-	c, err := sql.Open(driver, dsn)
-	if err != nil {
-		return nil, err
-	}
-
 	// retry to give some time for db to be ready
 	for i := 0; i < 50; i++ {
-		g, err := gorm.Open(parts[0], c)
+		g, err := gorm.Open(driver, dsn)
 		if err == nil {
 			return &g, nil
 		}
