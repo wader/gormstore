@@ -59,10 +59,11 @@ func newDB() *gorm.DB {
 	//db.LogMode(true)
 
 	// cleanup db
-	for _, t := range []*gormSession{
+	if err := db.DropTableIfExists(
 		&gormSession{tableName: "abc"},
-		&gormSession{tableName: "sessions"}} {
-		db.DropTableIfExists(t)
+		&gormSession{tableName: "sessions"},
+	).Error; err != nil {
+		panic(err)
 	}
 
 	return db
