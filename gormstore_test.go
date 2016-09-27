@@ -40,7 +40,7 @@ func connectDbURI(uri string) (*gorm.DB, error) {
 	for i := 0; i < 50; i++ {
 		g, err := gorm.Open(driver, dsn)
 		if err == nil {
-			return &g, nil
+			return g, nil
 		}
 		time.Sleep(500 * time.Millisecond)
 	}
