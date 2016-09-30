@@ -73,6 +73,9 @@ type gormSession struct {
 	tableName string `sql:"-"` // just for convenience instead of db.Table(...)
 }
 
+// Define a type for context keys so that they can't clash with anything else stored in context
+type contextKey string
+
 func (gs *gormSession) TableName() string {
 	return gs.tableName
 }
@@ -130,7 +133,7 @@ func (st *Store) New(r *http.Request, name string) (*sessions.Session, error) {
 			return session, nil
 		}
 
-		context.Set(r, name, s)
+		context.Set(r, contextKey(name), s)
 	}
 
 	return session, nil
@@ -138,7 +141,7 @@ func (st *Store) New(r *http.Request, name string) (*sessions.Session, error) {
 
 // Save session and set cookie header
 func (st *Store) Save(r *http.Request, w http.ResponseWriter, session *sessions.Session) error {
-	s, _ := context.Get(r, session.Name()).(*gormSession)
+	s, _ := context.Get(r, contextKey(session.Name())).(*gormSession)
 
 	// delete if max age is < 0
 	if session.Options.MaxAge < 0 {
@@ -174,7 +177,7 @@ func (st *Store) Save(r *http.Request, w http.ResponseWriter, session *sessions.
 		if err := st.db.Create(s).Error; err != nil {
 			return err
 		}
-		context.Set(r, session.Name(), s)
+		context.Set(r, contextKey(session.Name()), s)
 	} else {
 		s.Data = data
 		s.UpdatedAt = now
