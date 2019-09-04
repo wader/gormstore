@@ -4,9 +4,10 @@ services:
 
 language: go
 go:
-  - "tip"
   - "1.10"
   - "1.11"
   - "1.12"
+  - "1.13"
+  - "tip"
 
 script: ./test
