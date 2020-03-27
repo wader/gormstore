@@ -4,7 +4,7 @@
 
 #### Documentation
 
-http://www.godoc.org/github.com/wader/gormstore
+https://pkg.go.dev/github.com/wader/gormstore?tab=doc
 
 #### Example
 
