@@ -6,7 +6,7 @@ import "github.com/wader/gormstore/v2"
 ```
 For gorm v1 use:
 ```
-go get github.com/wader/gormstore
+import "github.com/wader/gormstore"
 ```
 
 #### Documentation
