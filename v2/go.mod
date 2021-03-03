@@ -6,6 +6,8 @@ require (
 	github.com/gofrs/uuid v4.0.0+incompatible // indirect
 	github.com/gorilla/context v1.1.1
 	github.com/gorilla/securecookie v1.1.1
+	// bump: gorilla/sessions /github\.com\/gorilla\/sessions v(.*)/ https://github.com/gorilla/sessions.git|^1
+	// bump: gorilla/sessions command cd v2 && go get github.com/gorilla/sessions@v$LATEST && go mod tidy
 	github.com/gorilla/sessions v1.2.1
 	github.com/jackc/pgmock v0.0.0-20201204152224-4fe30f7445fd // indirect
 	github.com/jackc/pgproto3/v2 v2.0.7 // indirect
@@ -20,5 +22,7 @@ require (
 	gorm.io/driver/mysql v1.0.4
 	gorm.io/driver/postgres v1.0.8
 	gorm.io/driver/sqlite v1.1.4
+	// bump: gorm.io/gorm /gorm\.io\/gorm v(.*)/ https://github.com/go-gorm/gorm.git|^1
+	// bump: gorm.io/gorm command cd v2 && go get gorm.io/gorm@v$LATEST && go mod tidy
 	gorm.io/gorm v1.20.12
 )
