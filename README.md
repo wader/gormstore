@@ -1,6 +1,13 @@
 #### GORM backend for gorilla sessions
 
-    go get github.com/wader/gormstore
+For gorm v2 use:
+```
+import "github.com/wader/gormstore/v2"
+```
+For gorm v1 use:
+```
+go get github.com/wader/gormstore
+```
 
 #### Documentation
 
