@@ -24,5 +24,5 @@ require (
 	gorm.io/driver/sqlite v1.1.4
 	// bump: gorm.io/gorm /gorm\.io\/gorm v(.*)/ https://github.com/go-gorm/gorm.git|^1
 	// bump: gorm.io/gorm command cd v2 && go get gorm.io/gorm@v$LATEST && go mod tidy
-	gorm.io/gorm v1.20.12
+	gorm.io/gorm v1.21.1
 )
