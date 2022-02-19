@@ -12,8 +12,8 @@ require (
 	github.com/pkg/errors v0.9.1 // indirect
 	golang.org/x/crypto v0.0.0-20211108221036-ceb1ce70b4fa // indirect
 	gopkg.in/yaml.v3 v3.0.0-20210107192922-496545a6307b // indirect
-	gorm.io/driver/mysql v1.0.4
-	gorm.io/driver/postgres v1.2.2
+	gorm.io/driver/mysql v1.3.2
+	gorm.io/driver/postgres v1.3.1
 	gorm.io/driver/sqlite v1.1.4
 	// bump: gorm.io/gorm /gorm\.io\/gorm v(.*)/ https://github.com/go-gorm/gorm.git|^1
 	// bump: gorm.io/gorm command cd v2 && go get -d gorm.io/gorm@v$LATEST && go mod tidy
