@@ -186,7 +186,7 @@ func (st *Store) Save(r *http.Request, w http.ResponseWriter, session *sessions.
 	}
 
 	// set session id cookie
-	id, err := securecookie.EncodeMulti(session.Name(), session.ID, st.Codecs...)
+	id, err := securecookie.EncodeMulti(session.Name(), s.ID, st.Codecs...)
 	if err != nil {
 		return err
 	}

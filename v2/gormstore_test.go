@@ -280,6 +280,35 @@ func TestMultiSessions(t *testing.T) {
 	match(t, r4, 200, "2")
 }
 
+func TestReuseSessionByName(t *testing.T) {
+	db := newDB()
+	store := New(db, []byte("secret"))
+	sessionName := "test-session"
+
+	handler := func(w http.ResponseWriter, r *http.Request) {
+		session, err := store.New(r, sessionName)
+		if err != nil {
+			panic(err)
+		}
+		session.ID = ""
+		if err := store.Save(r, w, session); err != nil {
+			panic(err)
+		}
+		http.Error(w, "", http.StatusOK)
+	}
+
+	r1 := req(handler, nil)
+	match(t, r1, 200, "")
+	r2 := req(handler, parseCookies(r1.Header().Get("Set-Cookie"))[sessionName])
+	match(t, r2, 200, "")
+
+	var count int64
+	store.sessionTable().Count(&count)
+	if count > 1 {
+		t.Error("An existing session with the same name should be reused")
+	}
+}
+
 func TestPeriodicCleanup(t *testing.T) {
 	db := newDB()
 	store := New(db, []byte("secret"))
