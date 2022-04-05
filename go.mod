@@ -1,4 +1,4 @@
-module github.com/wepala/gormstore
+module github.com/wader/gormstore
 
 go 1.14
 
