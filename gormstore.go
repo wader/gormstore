@@ -38,7 +38,6 @@ import (
 	"strings"
 	"time"
 
-	"github.com/gorilla/context"
 	"github.com/gorilla/securecookie"
 	"github.com/gorilla/sessions"
 	"github.com/jinzhu/gorm"
@@ -72,9 +71,6 @@ type gormSession struct {
 
 	tableName string `sql:"-"` // just for convenience instead of db.Table(...)
 }
-
-// Define a type for context keys so that they can't clash with anything else stored in context
-type contextKey string
 
 func (gs *gormSession) TableName() string {
 	return gs.tableName
@@ -117,23 +113,18 @@ func (st *Store) New(r *http.Request, name string) (*sessions.Session, error) {
 	session := sessions.NewSession(st, name)
 	opts := *st.SessionOpts
 	session.Options = &opts
+	session.IsNew = true
 
 	st.MaxAge(st.SessionOpts.MaxAge)
 
 	// try fetch from db if there is a cookie
-	if cookie, err := r.Cookie(name); err == nil {
-		if err := securecookie.DecodeMulti(name, cookie.Value, &session.ID, st.Codecs...); err != nil {
-			return session, nil
-		}
-		s := &gormSession{tableName: st.opts.TableName}
-		if err := st.db.Where("id = ? AND expires_at > ?", session.ID, gorm.NowFunc()).First(s).Error; err != nil {
-			return session, nil
-		}
+	s := st.getSessionFromCookie(r, session.Name())
+	if s != nil {
 		if err := securecookie.DecodeMulti(session.Name(), s.Data, &session.Values, st.Codecs...); err != nil {
 			return session, nil
 		}
-
-		context.Set(r, contextKey(name), s)
+		session.ID = s.ID
+		session.IsNew = false
 	}
 
 	return session, nil
@@ -141,7 +132,7 @@ func (st *Store) New(r *http.Request, name string) (*sessions.Session, error) {
 
 // Save session and set cookie header
 func (st *Store) Save(r *http.Request, w http.ResponseWriter, session *sessions.Session) error {
-	s, _ := context.Get(r, contextKey(session.Name())).(*gormSession)
+	s := st.getSessionFromCookie(r, session.Name())
 
 	// delete if max age is < 0
 	if session.Options.MaxAge < 0 {
@@ -177,7 +168,6 @@ func (st *Store) Save(r *http.Request, w http.ResponseWriter, session *sessions.
 		if err := st.db.Create(s).Error; err != nil {
 			return err
 		}
-		context.Set(r, contextKey(session.Name()), s)
 	} else {
 		s.Data = data
 		s.UpdatedAt = now
@@ -194,6 +184,22 @@ func (st *Store) Save(r *http.Request, w http.ResponseWriter, session *sessions.
 	}
 	http.SetCookie(w, sessions.NewCookie(session.Name(), id, session.Options))
 
+	return nil
+}
+
+// getSessionFromCookie looks for an existing gormSession from a session ID stored inside a cookie
+func (st *Store) getSessionFromCookie(r *http.Request, name string) *gormSession {
+	if cookie, err := r.Cookie(name); err == nil {
+		sessionID := ""
+		if err := securecookie.DecodeMulti(name, cookie.Value, &sessionID, st.Codecs...); err != nil {
+			return nil
+		}
+		s := &gormSession{tableName: st.opts.TableName}
+		if err := st.db.Where("id = ? AND expires_at > ?", sessionID, gorm.NowFunc()).First(s).Error; err != nil {
+			return nil
+		}
+		return s
+	}
 	return nil
 }
 
