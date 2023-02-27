@@ -42,5 +42,7 @@ postgres 10 || exit 1
 postgres 11 || exit 1
 postgres 12 || exit 1
 postgres 13 || exit 1
+postgres 14 || exit 1
+postgres 15 || exit 1
 mysql 5.7 || exit 1
 mysql 8.0 || exit 1
