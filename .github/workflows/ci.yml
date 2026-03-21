@@ -15,7 +15,7 @@ jobs:
     strategy:
       matrix:
         os: [ubuntu-latest]
-        go: [1.25.x, 1.24.x, 1.23.x]
+        go: [1.26.x, 1.25.x, 1.24.x]
     steps:
     - name: Checkout code
       uses: actions/checkout@v2
